@@ -62,7 +62,7 @@ class LoginPage extends StatelessWidget {
                       AppButton(
                         onTap: () => Navigator.pushNamedAndRemoveUntil(
                           context,
-                          Routes.home,
+                          Routes.main,
                           (_) => false,
                         ),
                         isDisable: false,
