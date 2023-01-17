@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:test_nusantara/src/presentations/pages/auth/login.dart';
 import 'package:test_nusantara/src/presentations/pages/auth/register.dart';
-import 'package:test_nusantara/src/presentations/pages/book/home.dart';
 import 'package:test_nusantara/src/presentations/pages/book/insert_book.dart';
-import 'package:test_nusantara/src/presentations/pages/main_page.dart';
 import 'package:test_nusantara/src/presentations/pages/book/update_book.dart';
+import 'package:test_nusantara/src/presentations/pages/main_page.dart';
 
 class Routes {
   Routes._();

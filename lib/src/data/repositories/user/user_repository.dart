@@ -58,4 +58,25 @@ class UserRepository {
       return false;
     }
   }
+
+  Future<bool> logout() async {
+    try {
+      final token = "Bearer ${await AppStorage.load("token")}";
+      final response = await http
+          .delete(Uri.parse("${ApiUrl.base}/api/user/logout"), headers: {
+        "Authorization": token,
+      });
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        log("Error occurred");
+        AppStorage.save("error", jsonDecode(response.body)["message"]);
+        return false;
+      }
+    } catch (e) {
+      log(e.toString());
+      AppStorage.save("error", e.toString());
+      return false;
+    }
+  }
 }

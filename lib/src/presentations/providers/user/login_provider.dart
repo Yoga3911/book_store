@@ -24,4 +24,8 @@ class LoginProvider with ChangeNotifier {
   Future<bool> login({required LoginModel model}) async {
     return await userRepository.login(model: model);
   }
+
+  Future<bool> logout() async {
+    return await userRepository.logout();
+  }
 }

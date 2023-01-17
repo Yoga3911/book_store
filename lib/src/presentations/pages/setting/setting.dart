@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:test_nusantara/src/core/app_color.dart';
+import 'package:test_nusantara/src/presentations/providers/user/login_provider.dart';
 import 'package:test_nusantara/src/routes/route.dart';
 import 'package:test_nusantara/src/widgets/list_tile.dart';
+
+import '../../../data/storage/storage.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
@@ -122,18 +126,40 @@ class SettingPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        Routes.login,
-                        (route) => false,
-                      ),
-                      child: Text(
-                        "Yes",
-                        style: GoogleFonts.poppins(
-                          fontSize: 16.sp,
-                        ),
-                      ),
+                    ChangeNotifierProvider(
+                      create: (_) => LoginProvider(),
+                      builder: (ctx, _) {
+                        final prov = ctx.read<LoginProvider>();
+                        return ElevatedButton(
+                          onPressed: () {
+                            prov.logout().then(
+                              (value) async {
+                                if (value) {
+                                  return Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    Routes.login,
+                                    (route) => false,
+                                  );
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      await AppStorage.load("error"),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            "Yes",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
