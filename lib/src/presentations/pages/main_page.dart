@@ -5,6 +5,7 @@ import 'package:test_nusantara/src/core/no_glow.dart';
 import 'package:test_nusantara/src/presentations/pages/book/home.dart';
 import 'package:test_nusantara/src/presentations/pages/library/library.dart';
 import 'package:test_nusantara/src/presentations/pages/setting/setting.dart';
+import 'package:test_nusantara/src/routes/route.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -74,7 +75,17 @@ class _MainPageState extends State<MainPage> {
                 Icons.search_rounded,
               ),
             )
-          : null,
+          : (_index == 1)
+              ? FloatingActionButton(
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    Routes.add,
+                  ),
+                  child: const Icon(
+                    Icons.add_rounded,
+                  ),
+                )
+              : null,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColor.black,
         selectedItemColor: AppColor.primary,
