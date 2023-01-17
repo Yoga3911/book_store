@@ -29,7 +29,13 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: (value) {
+        if (value == "") {
+          return "Field can't null";
+        }
+        return null;
+      },
       obscureText: widget.isSecure ? isNotVisible : false,
       controller: widget.controller,
       cursorColor: AppColor.primary,

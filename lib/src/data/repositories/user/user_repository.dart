@@ -26,6 +26,7 @@ class UserRepository {
       }
     } catch (e) {
       log(e.toString());
+      AppStorage.save("error", e.toString());
       return false;
     }
   }
