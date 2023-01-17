@@ -3,18 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test_nusantara/src/core/app_color.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  String selected = "Trending";
-
-  @override
   Widget build(BuildContext context) {
+    String selected = "Trending";
     return Column(
       children: [
         SizedBox(
