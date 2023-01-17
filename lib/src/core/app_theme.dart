@@ -16,6 +16,10 @@ class AppTheme {
         fontWeight: FontWeight.w600,
       ),
     ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: AppColor.primary,
+      foregroundColor: Colors.black,
+    ),
     scaffoldBackgroundColor: AppColor.black,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
