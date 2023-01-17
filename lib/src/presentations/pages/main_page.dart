@@ -21,10 +21,28 @@ class _MainPageState extends State<MainPage> {
     const SettingPage(),
   ];
 
-  String _title = "Good Afternoon";
+  String _title = "";
+
+  String selectGreeting(DateTime time) {
+    if (time.hour >= 5 && time.hour <= 9) {
+      return "Hai, Good Morning";
+    } else if (time.hour >= 10 && time.hour <= 17) {
+      return "Hai, Good Afternoon";
+    } else {
+      return "Hai, Good Evening";
+    }
+  }
+
+  @override
+  void initState() {
+    _title = selectGreeting(DateTime.now());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final time = DateTime.now();
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -65,7 +83,7 @@ class _MainPageState extends State<MainPage> {
         onTap: (val) {
           _index = val;
           if (val == 0) {
-            _title = "Good Afternoon";
+            _title = selectGreeting(time);
           } else if (val == 1) {
             _title = "My Library";
           } else if (val == 2) {
