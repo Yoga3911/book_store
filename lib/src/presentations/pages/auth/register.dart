@@ -5,9 +5,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:test_nusantara/src/core/app_color.dart';
 import 'package:test_nusantara/src/core/no_glow.dart';
+import 'package:test_nusantara/src/data/models/user/register_model.dart';
 import 'package:test_nusantara/src/presentations/providers/user/register_provider.dart';
+import 'package:test_nusantara/src/routes/route.dart';
 import 'package:test_nusantara/src/widgets/button.dart';
 import 'package:test_nusantara/src/widgets/text_field.dart';
+
+import '../../../data/storage/storage.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -142,7 +146,38 @@ class RegisterPage extends StatelessWidget {
                               builder: (_, notifier, __) {
                                 return AppButton(
                                   onTap: () {
-                                    if (formKey.currentState!.validate()) {}
+                                    if (formKey.currentState!.validate()) {
+                                      register
+                                          .register(
+                                        model: RegisterModel(
+                                          name: register.nameController.text,
+                                          email: register.emailController.text,
+                                          password:
+                                              register.pass1Controller.text,
+                                          passwordConfirmation:
+                                              register.pass2Controller.text,
+                                        ),
+                                      )
+                                          .then(
+                                        (value) async {
+                                          if (value) {
+                                            return Navigator.pushNamed(
+                                              context,
+                                              Routes.login,
+                                            );
+                                          }
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                await AppStorage.load("error"),
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }
                                   },
                                   title: "Create Account",
                                   isDisable: !notifier.getAgree,

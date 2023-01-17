@@ -96,7 +96,8 @@ class LoginPage extends StatelessWidget {
                                           .showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                              await AppStorage.load("error")),
+                                            await AppStorage.load("error"),
+                                          ),
                                           backgroundColor: Colors.red,
                                         ),
                                       );
