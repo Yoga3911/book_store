@@ -49,6 +49,14 @@ class _MainPageState extends State<MainPage> {
             )
         ],
       ),
+      floatingActionButton: (_index == 0)
+          ? FloatingActionButton(
+              onPressed: () {},
+              child: const Icon(
+                Icons.search_rounded,
+              ),
+            )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColor.black,
         selectedItemColor: AppColor.primary,
