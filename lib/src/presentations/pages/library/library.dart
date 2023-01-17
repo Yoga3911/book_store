@@ -23,7 +23,9 @@ class LibraryPage extends StatelessWidget {
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: AppColor.primary,
+                ),
               );
             }
             return ListView.builder(
