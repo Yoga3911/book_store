@@ -269,6 +269,7 @@ class HomePage extends StatelessWidget {
           Text(
             title,
             style: GoogleFonts.poppins(
+              fontSize: 16.sp,
               color: selected == title ? AppColor.black : Colors.white,
             ),
           ),

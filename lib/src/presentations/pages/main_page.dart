@@ -21,6 +21,8 @@ class _MainPageState extends State<MainPage> {
     const SettingPage(),
   ];
 
+  String _title = "Good Afternoon";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +31,7 @@ class _MainPageState extends State<MainPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Good Afternoon"),
+            Text(_title),
             Container(
               color: AppColor.primary,
               width: 100.w,
@@ -38,12 +40,13 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 5.w),
-            child: const CircleAvatar(
-              backgroundImage: AssetImage("assets/cana.jpg"),
-            ),
-          )
+          if (_index != 2)
+            Padding(
+              padding: EdgeInsets.only(right: 5.w),
+              child: const CircleAvatar(
+                backgroundImage: AssetImage("assets/cana.jpg"),
+              ),
+            )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -53,6 +56,13 @@ class _MainPageState extends State<MainPage> {
         currentIndex: _index,
         onTap: (val) {
           _index = val;
+          if (val == 0) {
+            _title = "Good Afternoon";
+          } else if (val == 1) {
+            _title = "My Library";
+          } else if (val == 2) {
+            _title = "Account Setting";
+          }
           setState(() {});
         },
         items: const [
