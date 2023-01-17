@@ -33,6 +33,7 @@ class LibraryPage extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (_, idx) {
+                final book = snapshot.data?[idx];
                 return AppItemListTile(
                   onTap: () => Navigator.pushNamed(
                     context,
@@ -85,7 +86,8 @@ class LibraryPage extends StatelessWidget {
                       ),
                     );
                   },
-                  title: "Test",
+                  title: book?.title ?? "",
+                  subtitle: book?.subtitle ?? "",
                 );
               },
             );

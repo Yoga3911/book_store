@@ -6,12 +6,14 @@ class AppItemListTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
   final String title;
+  final String subtitle;
 
   const AppItemListTile({
     super.key,
     required this.onTap,
     required this.onDelete,
     required this.title,
+    required this.subtitle,
   });
 
   @override
@@ -23,6 +25,13 @@ class AppItemListTile extends StatelessWidget {
           color: Colors.white,
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: GoogleFonts.poppins(
+          color: Colors.white,
+          fontSize: 14.sp,
         ),
       ),
       trailing: IconButton(
