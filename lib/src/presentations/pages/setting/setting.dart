@@ -40,35 +40,41 @@ class SettingPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage:
-                                const AssetImage("assets/cana.jpg"),
-                            radius: 30.r,
-                          ),
-                          SizedBox(width: 7.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user?.name ?? "",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  const AssetImage("assets/cana.jpg"),
+                              radius: 30.r,
+                            ),
+                            SizedBox(width: 7.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user?.name ?? "",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    user?.email ?? "",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                user?.email ?? "",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(
