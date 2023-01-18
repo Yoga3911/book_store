@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:test_nusantara/src/core/app_color.dart';
+import 'package:test_nusantara/src/data/models/book/book_model.dart';
+import 'package:test_nusantara/src/presentations/providers/book/book_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -109,88 +112,111 @@ class HomePage extends StatelessWidget {
           ],
         ),
         SizedBox(height: 10.h),
-        SizedBox(
-          height: 300.h,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            physics: const ScrollPhysics(),
-            itemCount: 6,
-            itemBuilder: (_, idx) {
-              return Padding(
-                padding: EdgeInsets.only(left: 20.w),
-                child: SizedBox(
-                  width: 130.w,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 200.h,
-                        width: 130.w,
-                        decoration: BoxDecoration(
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 3,
-                              color: Colors.grey,
-                              offset: Offset(2, 2),
-                              spreadRadius: 1,
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(10.r),
-                          image: const DecorationImage(
-                            image: AssetImage("assets/bg.png"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 7.h),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Ini Judul",
-                            style: GoogleFonts.poppins(
-                              color: AppColor.primary,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            "Ini Deskripsi",
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                          SizedBox(height: 5.h),
-                          Row(
+        ChangeNotifierProvider(
+          create: (_) => BookProvider(),
+          builder: (ctx, _) {
+            final prov = ctx.read<BookProvider>();
+            return FutureBuilder<List<BookModel>>(
+              future: prov.getAll(),
+              builder: (_, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(
+                    color: AppColor.primary,
+                  );
+                }
+                final books = snapshot.data;
+                return SizedBox(
+                  height: 300.h,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    physics: const ScrollPhysics(),
+                    itemCount: books?.length ?? 0,
+                    itemBuilder: (_, idx) {
+                      final book = books?[idx];
+                      return Padding(
+                        padding: EdgeInsets.only(left: 20.w),
+                        child: SizedBox(
+                          width: 130.w,
+                          child: Column(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "10 Oktober 2022",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 10.sp,
+                              Container(
+                                height: 200.h,
+                                width: 130.w,
+                                decoration: BoxDecoration(
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      blurRadius: 3,
+                                      color: Colors.grey,
+                                      offset: Offset(2, 2),
+                                      spreadRadius: 1,
+                                    )
+                                  ],
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  image: const DecorationImage(
+                                    image: AssetImage("assets/bg.png"),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                              Icon(
-                                Icons.calendar_month,
-                                color: Colors.white,
-                                size: 15.r,
-                              ),
+                              SizedBox(height: 7.h),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    book?.title ?? "",
+                                    style: GoogleFonts.poppins(
+                                      color: AppColor.primary,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    book?.subtitle ?? "",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        book?.published
+                                                .toString()
+                                                .split(" ")[0] ??
+                                            "",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 10.sp,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.calendar_month,
+                                        color: Colors.white,
+                                        size: 15.r,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
                             ],
                           ),
-                        ],
-                      )
-                    ],
+                        ),
+                      );
+                    },
                   ),
-                ),
-              );
-            },
-          ),
-        )
+                );
+              },
+            );
+          },
+        ),
       ],
     );
   }
