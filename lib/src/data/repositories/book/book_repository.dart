@@ -37,6 +37,45 @@ class BookRepository {
     return [];
   }
 
+  Future<bool> editBook({
+    required AddBookModel model,
+    required int bookId,
+  }) async {
+    try {
+      final token = "Bearer ${await AppStorage.load("token")}";
+
+      final response = await http.put(
+        Uri.parse("${ApiUrl.base}/api/books/$bookId/edit"),
+        headers: {
+          "Authorization": token,
+        },
+        body: AddBookModel(
+          author: model.author,
+          description: model.description,
+          isbn: model.isbn,
+          pages: model.pages,
+          published: model.published,
+          publisher: model.publisher,
+          subtitle: model.subtitle,
+          title: model.title,
+          website: model.website,
+        ).toJson(),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        log("Error occurred");
+        AppStorage.save("error", jsonDecode(response.body)["message"]);
+        return false;
+      }
+    } catch (e) {
+      log(e.toString());
+      AppStorage.save("error", e.toString());
+      return false;
+    }
+  }
+
   Future<bool> addBook({
     required AddBookModel model,
   }) async {
@@ -59,30 +98,7 @@ class BookRepository {
           title: model.title,
           website: model.website,
         ).toJson(),
-        // body: {
-        //   "isbn": model.isbn,
-        //   "title": model.title,
-        //   "subtitle": model.title,
-        //   "author": model.author,
-        //   "published": model.published,
-        //   "publisher": model.publisher,
-        //   "pages": model.pa,
-        //   "description": model.description,
-        //   "website": model.website,
-        // },
       );
-
-      inspect({
-        "isbn": model.isbn,
-        "title": model.title,
-        "subtitle": model.title,
-        "author": model.author,
-        "published": model.published,
-        "publisher": model.publisher,
-        "pages": model.pages,
-        "description": model.description,
-        "website": model.website,
-      });
 
       if (response.statusCode == 200) {
         return true;

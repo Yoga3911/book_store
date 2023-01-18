@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:test_nusantara/src/core/no_glow.dart';
+import 'package:test_nusantara/src/data/models/book/add_book_model.dart';
+import 'package:test_nusantara/src/data/models/book/book_model.dart';
+import 'package:test_nusantara/src/presentations/providers/book/add_book_provider.dart';
 import 'package:test_nusantara/src/widgets/book_text_field.dart';
+
+import '../../../core/app_color.dart';
+import '../../../data/storage/storage.dart';
+import '../../../routes/route.dart';
 
 class EditBookPage extends StatefulWidget {
   const EditBookPage({super.key});
@@ -12,9 +20,19 @@ class EditBookPage extends StatefulWidget {
 
 class EditBookPageState extends State<EditBookPage> {
   final formKey = GlobalKey<FormState>();
+  DateTime? now = DateTime.now();
+  Future<void> selectDate() async {
+    now = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.parse("2000-12-12"),
+      lastDate: DateTime.parse("2100-12-12"),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final model = ModalRoute.of(context)!.settings.arguments as BookModel;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Book"),
@@ -26,53 +44,139 @@ class EditBookPageState extends State<EditBookPage> {
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Form(
             key: formKey,
-            child: ListView(
-              children: [
-                AppBookTextField(
-                  hint: "ISBN",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Title",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Subtitle",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Author",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Published",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Publisher",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Pages",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Description",
-                  controller: TextEditingController(),
-                ),
-                AppBookTextField(
-                  hint: "Website",
-                  controller: TextEditingController(),
-                ),
-                SizedBox(height: 10.h),
-                ElevatedButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {}
-                  },
-                  child: const Text("Save"),
-                ),
-                SizedBox(height: 10.h),
-              ],
+            child: ChangeNotifierProvider(
+              create: (_) => AddBookProvider(),
+              builder: (ctx, __) {
+                final prov = ctx.read<AddBookProvider>();
+                prov.fillTextField(model);
+                return ListView(
+                  children: [
+                    AppBookTextField(
+                      hint: "ISBN",
+                      controller: prov.isbnController,
+                    ),
+                    AppBookTextField(
+                      hint: "Title",
+                      controller: prov.titleController,
+                    ),
+                    AppBookTextField(
+                      hint: "Subtitle",
+                      controller: prov.subtitleController,
+                    ),
+                    AppBookTextField(
+                      hint: "Author",
+                      controller: prov.authorController,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                      child: TextFormField(
+                        readOnly: true,
+                        validator: (value) {
+                          if (value == "") {
+                            return "Field can't null";
+                          }
+                          return null;
+                        },
+                        controller: prov.publishedController,
+                        cursorColor: AppColor.primary,
+                        decoration: InputDecoration(
+                          hintText: "Published",
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              selectDate().then((value) {
+                                prov.publishedController.text = now.toString();
+                              });
+                            },
+                            icon: const Icon(Icons.calendar_month),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                            borderSide: const BorderSide(
+                              color: AppColor.primary,
+                            ),
+                          ),
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(20.h),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                    AppBookTextField(
+                      hint: "Publisher",
+                      controller: prov.publisherController,
+                    ),
+                    AppBookTextField(
+                      hint: "Pages",
+                      controller: prov.pagesController,
+                    ),
+                    AppBookTextField(
+                      hint: "Description",
+                      controller: prov.descriptionController,
+                    ),
+                    AppBookTextField(
+                      hint: "Website",
+                      controller: prov.websiteController,
+                    ),
+                    SizedBox(height: 10.h),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          final pages = int.tryParse(prov.pagesController.text);
+                          prov
+                              .update(
+                            model: AddBookModel(
+                              isbn: prov.isbnController.text,
+                              title: prov.titleController.text,
+                              subtitle: prov.subtitleController.text,
+                              author: prov.authorController.text,
+                              published: prov.publishedController.text,
+                              publisher: prov.publisherController.text,
+                              pages: pages,
+                              description: prov.descriptionController.text,
+                              website: prov.websiteController.text,
+                            ),
+                            bookId: model.id ?? 0,
+                          )
+                              .then(
+                            (value) async {
+                              if (value) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Edit book success",
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                                return Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  Routes.main,
+                                  (route) => false,
+                                );
+                              }
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    await AppStorage.load("error"),
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: const Text("Save"),
+                    ),
+                    SizedBox(height: 10.h),
+                  ],
+                );
+              },
             ),
           ),
         ),

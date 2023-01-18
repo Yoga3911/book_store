@@ -38,6 +38,7 @@ class LibraryPage extends StatelessWidget {
                   onTap: () => Navigator.pushNamed(
                     context,
                     Routes.edit,
+                    arguments: book,
                   ),
                   onDelete: () {
                     showDialog(

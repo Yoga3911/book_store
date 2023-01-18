@@ -7,6 +7,7 @@ import 'package:test_nusantara/src/presentations/providers/book/add_book_provide
 import 'package:test_nusantara/src/routes/route.dart';
 import 'package:test_nusantara/src/widgets/book_text_field.dart';
 
+import '../../../core/app_color.dart';
 import '../../../data/storage/storage.dart';
 
 class AddBookPage extends StatefulWidget {
@@ -18,6 +19,16 @@ class AddBookPage extends StatefulWidget {
 
 class _AddBookPageState extends State<AddBookPage> {
   final formKey = GlobalKey<FormState>();
+
+  DateTime? now = DateTime.now();
+  Future<void> selectDate() async {
+    now = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.parse("2000-12-12"),
+      lastDate: DateTime.parse("2100-12-12"),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +65,43 @@ class _AddBookPageState extends State<AddBookPage> {
                       hint: "Author",
                       controller: prov.authorController,
                     ),
-                    AppBookTextField(
-                      hint: "Published",
-                      controller: prov.publishedController,
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                      child: TextFormField(
+                        readOnly: true,
+                        validator: (value) {
+                          if (value == "") {
+                            return "Field can't null";
+                          }
+                          return null;
+                        },
+                        controller: prov.publishedController,
+                        cursorColor: AppColor.primary,
+                        decoration: InputDecoration(
+                          hintText: "Published",
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              selectDate().then((value) {
+                                prov.publishedController.text = now.toString();
+                              });
+                            },
+                            icon: const Icon(Icons.calendar_month),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                            borderSide: const BorderSide(
+                              color: AppColor.primary,
+                            ),
+                          ),
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(20.h),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
                     ),
                     AppBookTextField(
                       hint: "Publisher",
@@ -96,6 +141,14 @@ class _AddBookPageState extends State<AddBookPage> {
                               .then(
                             (value) async {
                               if (value) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Insert book success",
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
                                 return Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   Routes.main,
