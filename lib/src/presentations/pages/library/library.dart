@@ -8,6 +8,7 @@ import 'package:test_nusantara/src/routes/route.dart';
 import 'package:test_nusantara/src/widgets/item_list_tile.dart';
 
 import '../../../core/app_color.dart';
+import '../../../data/storage/storage.dart';
 
 class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
@@ -75,7 +76,36 @@ class LibraryPage extends StatelessWidget {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              prov.delete(bookId: book?.id ?? 0).then(
+                                (value) async {
+                                  if (value) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "Delete book success",
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    return Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      Routes.main,
+                                      (route) => false,
+                                    );
+                                  }
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        await AppStorage.load("error"),
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                             child: Text(
                               "Yes",
                               style: GoogleFonts.poppins(
